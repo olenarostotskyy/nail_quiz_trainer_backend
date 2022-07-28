@@ -1,0 +1,14 @@
+[
+    {
+        "question_id":1,
+        "question":"what is nail polish?",
+        "correct_answer":"nail polish",
+        "incorrect_answers":["answer1","answer2","answer3"]
+    },
+    {
+        "question_id":2,
+        "question":"what is nail polish?",
+        "correct_answer":"nail polish",
+        "incorrect_answers":["answer1","answer2","answer3"]
+    }
+]
