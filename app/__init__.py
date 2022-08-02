@@ -30,16 +30,3 @@ def create_app():
 
     CORS(app)
     return app
-
-
-# from flask import Flask
-
-# def create_app(test_config=None):
-#     app = Flask(__name__)
-    
-#     # from app.models.quiz import Quiz
-
-#     from .routes.quiz import questions_bp
-#     app.register_blueprint(questions_bp)
-
-#     return app
