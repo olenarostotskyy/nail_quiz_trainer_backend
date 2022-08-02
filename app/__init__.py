@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
-# from flask_cors import CORS
+from flask_cors import CORS
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -28,7 +28,7 @@ def create_app():
     from .routes.quiz import questions_bp
     app.register_blueprint(questions_bp)
 
-    # CORS(app)
+    CORS(app)
     return app
 
 
