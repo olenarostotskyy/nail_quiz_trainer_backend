@@ -1,16 +1,6 @@
-from tokenize import String
+
 from app import db
-from sqlalchemy.dialects.postgresql import ARRAY
 
-
-# class Quiz:
-#      def __init__(self, question_id, question, correct_answer,incorrect_answer1,incorrect_answer2,incorrect_answer3):
-#         self.question_id = question_id
-#         self.question = question
-#         self.correct_answer = correct_answer
-#         self.incorrect_answer1=incorrect_answer1
-#         self.incorrect_answer2=incorrect_answer2       
-#         self.incorrect_answer3=incorrect_answer3
 
 
 class Quiz(db.Model):
