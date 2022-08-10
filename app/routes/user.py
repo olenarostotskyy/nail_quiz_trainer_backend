@@ -1,10 +1,20 @@
 from flask import Blueprint, jsonify, request, abort, make_response
 from app.models.user import User
+from app.models. score import Score
 from app import db
 from flask import current_app as app
 import requests
 
 users_bp = Blueprint('users_bp', __name__, url_prefix='/users')
+
+
+# helper function to validate if request body contains all the info
+def check_request_body_for_score():
+    request_body = request.get_json()
+    if "score" not in request_body:
+        abort(make_response({"details": f"invalid data: should contain a score"}, 404))
+    return request_body
+
 
 def validate_user_id(user_id):
     try:
@@ -56,7 +66,7 @@ def get_one_user(user_id):
     return jsonify(response_body), 200
 
 
-
+# delete user
 @users_bp.route("/<user_id>", methods=["DELETE"])
 def delete_user(user_id):
     user = validate_user_id(user_id)
@@ -65,3 +75,25 @@ def delete_user(user_id):
     db.session.commit()
     
     return { "msg": f"User {user_id} is successfully deleted." }, 200     
+
+
+# post score for specific user id
+@users_bp.route("/<user_id>/score", methods=["POST"])
+def create_score_for_user(user_id):
+    request_body = check_request_body_for_score()
+    user = validate_user_id(user_id)
+    new_score = Score(score=request_body["score"] )
+    user.scores.append(new_score)
+    db.session.commit()
+    
+    response = new_score.to_json()
+    return jsonify(response), 201
+
+# get all score for specific user id
+@users_bp.route("/<user_id>/score", methods=["GET"])   
+def get_all_scores_from_user(user_id):
+    user = validate_user_id(user_id)
+    scores = user.scores
+    list_all_scores = [score.to_json() for score in scores]
+    
+    return jsonify(list_all_scores), 200
