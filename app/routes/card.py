@@ -18,19 +18,19 @@ def validate_card_id(card_id):
                             ))
     return card
 
-@cards_bp.route('', methods=['POST'])
-def post_new_card():
-    new_card_request = request.get_json()
-    try:
-        new_card = Card(category=new_card_request['category'], question=new_card_request['question'], correct_answer=new_card_request['correct_answer'], incorrect_answer1=new_card_request['incorrect_answer1'], incorrect_answer2=new_card_request['incorrect_answer2'], incorrect_answer3=new_card_request['incorrect_answer3'] )
-    except KeyError:
-        return {'error details': 'Question, correct answer and incorect answers are required to post a new card'}, 400
+# @cards_bp.route('', methods=['POST'])
+# def post_new_card():
+#     new_card_request = request.get_json()
+#     try:
+#         new_card = Card(category=new_card_request['category'], question=new_card_request['question'], correct_answer=new_card_request['correct_answer'], incorrect_answer1=new_card_request['incorrect_answer1'], incorrect_answer2=new_card_request['incorrect_answer2'], incorrect_answer3=new_card_request['incorrect_answer3'] )
+#     except KeyError:
+#         return {'error details': 'Question, correct answer and incorect answers are required to post a new card'}, 400
     
-    db.session.add(new_card)
-    db.session.commit()
+#     db.session.add(new_card)
+#     db.session.commit()
 
-    rsp = {'message': f'New card created witcard.card_id: {new_card.card_id}'}
-    return rsp, 201 
+#     rsp = {'message': f'New card created wit id: {new_card.card_id}'}
+#     return rsp, 201 
 
 
 #get all cards    

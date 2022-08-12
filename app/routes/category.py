@@ -1,6 +1,8 @@
 from unicodedata import category
 from flask import Blueprint, jsonify, request, abort, make_response
 from app.models.category import Category
+from app.models.card import Card
+
 from app import db
 from flask import current_app as app
 import requests
@@ -66,3 +68,35 @@ def delete_card(category_id):
     db.session.commit()
     
     return { "msg": f"Category {category_id} is successfully deleted." }, 200  
+
+
+# helper function to validate if request body contains category when we post a card
+def check_request_body_for_card():
+    request_body = request.get_json()
+    if "category_name" not in request_body:
+        abort(make_response({"details": f"invalid data: should contain a category"}, 404))
+    return request_body   
+
+@categories_bp.route('/<category_id>/cards', methods=['GET'])
+def get_all_cards_from_category(category_id):
+    category = validate_category_id(category_id)
+    cards = category.cards
+     # query parameters
+    params=request.args #this returns the value of the query param if it was set, or None if the query param is not found.
+    amount=int(params["amount"])
+    
+    list_all_cards = [card.to_json() for card in cards]
+    list_all_cards=list_all_cards[0:amount]
+    
+    return jsonify(list_all_cards), 200 
+
+# post card for specific category id 
+@categories_bp.route("/<category_id>/cards", methods=["POST"])
+def create_cards(category_id):
+    request_body = check_request_body_for_card()
+    category = validate_category_id(category_id)
+    new_card = Card(category_name=request_body["category_name"], question=request_body["question"], correct_answer=request_body["correct_answer"], incorrect_answer1=request_body["incorrect_answer1"], incorrect_answer2=request_body["incorrect_answer2"], incorrect_answer3=request_body["incorrect_answer3"] )
+    category.cards.append(new_card)
+    db.session.commit()
+    response = new_card.to_json()
+    return jsonify(response), 201       
