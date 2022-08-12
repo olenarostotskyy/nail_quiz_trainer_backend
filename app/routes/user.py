@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, abort, make_response
+from sqlalchemy import false, null
 from app.models.user import User
 from app.models. score import Score
 from app import db
@@ -32,7 +33,7 @@ def validate_user_id(user_id):
 def post_new_user():
     new_user_request = request.get_json()
     try:
-        new_user = User(username = new_user_request['username'], email=new_user_request['email'], password=new_user_request['password'], confirmed_password=new_user_request['confirmed_password'])
+        new_user = User(username = new_user_request['username'],  password=new_user_request['password'], confirmed_password=new_user_request['confirmed_password'])
     except KeyError:
         return {'error details': 'Username, email and password are required to post a new user'}, 400
     db.session.add(new_user)
@@ -59,7 +60,7 @@ def get_one_user(user_id):
     response_body =   {
             'user_id': user.user_id,
             'username': user.username,
-            'email': user.email,
+            # 'email': user.email,
             'confirmed_password':user.confirmed_password
         }  
     
@@ -97,3 +98,20 @@ def get_all_scores_from_user(user_id):
     list_all_scores = [score.to_json() for score in scores]
     
     return jsonify(list_all_scores), 200
+
+
+# authenticate user for login
+@users_bp.route('/auth', methods=['POST'])
+def authenticate_new_user():
+    new_user_request = request.get_json()
+    auth_user = User.query.filter_by(username=new_user_request['username']).first()
+    if auth_user == None:
+        rsp = {'message': f'unknown user'}
+        return rsp, 401
+
+    if auth_user.password != new_user_request['password']:
+        rsp = {'message': f'incorrect password'}
+        return rsp, 401
+
+    rsp = {'message': f'success'}
+    return rsp, 201

@@ -21,6 +21,7 @@ def create_app():
     # Import models here for Alembic setup
     from app.models.quiz import Quiz
     from app.models.user import User
+    from app.models.card import Card
     
     db.init_app(app)
     migrate.init_app(app, db)
@@ -31,6 +32,9 @@ def create_app():
 
     from .routes.user import users_bp
     app.register_blueprint(users_bp)
+
+    from .routes.card import cards_bp
+    app.register_blueprint(cards_bp)
 
     CORS(app)
     return app
