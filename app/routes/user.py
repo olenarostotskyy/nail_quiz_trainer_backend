@@ -112,6 +112,9 @@ def authenticate_new_user():
     if auth_user.password != new_user_request['password']:
         rsp = {'message': f'incorrect password'}
         return rsp, 401
-
-    rsp = {'message': f'success'}
-    return rsp, 201
+    
+    rsp = {
+        "username": auth_user.username,
+        "Id": auth_user.user_id
+    }
+    return jsonify(rsp), 201
